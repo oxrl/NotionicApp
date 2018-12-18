@@ -1,18 +1,28 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { NotesService } from '../../services/notes.service';
+import { DetailPage } from '../detail/detail';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  notes = [
-    { id:1,title:"Nota 1",description : "Descripcion Nota 1"},
-    { id:2,title:"Nota 2",description : "Descripcion Nota 2"},
-    { id:3,title:"Nota 3",description : "Descripcion Nota 3"},
-  ];
-  constructor(public navCtrl: NavController) {
+  notes = [];
+  @ViewChild('myNav') nav: NavController;
+  constructor(public navCtrl: NavController, public notesService : NotesService) {
+    notesService.getNotes().valueChanges()
+      .subscribe( notas => {
+        this.notes = notas;
+      });
+  }
 
+  public goToDetail(id){
+    this.navCtrl.push(DetailPage, {id:id});
+  }
+
+  public createNote(){
+    this.navCtrl.push(DetailPage, {id:0});
   }
 
 }
